@@ -1,19 +1,16 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-  Injectable,
-  Scope,
-} from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { HttpException, Injectable } from '@nestjs/common';
+import { AuthGuard as BaseAuthGuard } from '@nestjs/passport';
 
-@Injectable({ scope: Scope.REQUEST })
-export class AuthGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    const req = context.switchToHttp().getRequest();
-    console.log(req);
-    return true;
+@Injectable()
+export class AuthGuard extends BaseAuthGuard(['jwt']) {
+  constructor() {
+    super();
+  }
+
+  handleRequest(err, user, info) {
+    if (err || !user) {
+      throw new HttpException({ message: 'You need authorization' }, 401);
+    }
+    return user;
   }
 }
