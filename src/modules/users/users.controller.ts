@@ -13,6 +13,7 @@ import { ValidationPipe } from '../../pipes/validation.pipe';
 import { User } from '../../entities/user.entity';
 import { AuthGuard } from '../../guard/auth.guard';
 import { SignInUserDto } from './dto/sign-in-user.dto';
+import { AuthResponseDto } from './dto/response/auth-response.dto';
 
 @Controller('users')
 export class UsersController {
@@ -22,7 +23,7 @@ export class UsersController {
   @Post('sign-up')
   public async create(
     @Body(new ValidationPipe()) body: CreateUserDto,
-  ): Promise<any> {
+  ): Promise<AuthResponseDto> {
     return await this.usersService.createUser(body);
   }
 
@@ -30,14 +31,14 @@ export class UsersController {
   @Post('sign-in')
   public async signIn(
     @Body(new ValidationPipe()) body: SignInUserDto,
-  ): Promise<any> {
+  ): Promise<AuthResponseDto> {
     return await this.usersService.signIn(body);
   }
 
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @Get('current')
-  public async getUser(@Req() { user }): Promise<any> {
+  public async getUser(@Req() { user }): Promise<User> {
     return user;
   }
 }

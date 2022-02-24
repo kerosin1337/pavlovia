@@ -25,7 +25,7 @@ export class UsersService {
   }
 
   public async signIn(dto) {
-    const user = await this.userRepository.findOne(dto);
+    const user = await this.userRepository.findOne({ where: dto });
 
     return {
       user,

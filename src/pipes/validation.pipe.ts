@@ -12,9 +12,17 @@ import { plainToClass } from 'class-transformer';
 export class ValidationPipe implements PipeTransform {
   private messageFormatter(errors: ValidationError[]) {
     const obj = {};
-
     for (const error of errors) {
-      obj[error.property] = Object.values(error.constraints);
+      if (error.children.length) {
+        for (const children of error.children) {
+          for (const child of children.children) {
+            obj[`children.${children.property}.${child.property}`] =
+              Object.values(child.constraints);
+          }
+        }
+      } else {
+        obj[error.property] = Object.values(error.constraints);
+      }
     }
     return obj;
   }
@@ -25,7 +33,6 @@ export class ValidationPipe implements PipeTransform {
     if (errors.length) {
       throw new HttpException(this.messageFormatter(errors), 422);
     }
-
     return value;
   }
 }

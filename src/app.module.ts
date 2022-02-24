@@ -3,6 +3,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './entities/user.entity';
 import { UsersModule } from './modules/users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { ResultsModule } from './modules/results/results.module';
+import { Result } from './entities/result.entity';
 
 @Module({
   imports: [
@@ -16,9 +18,10 @@ import { ConfigModule } from '@nestjs/config';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User],
+      models: [User, Result],
     }),
     UsersModule,
+    ResultsModule,
   ],
   controllers: [],
   providers: [],
